@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Api.Swashbuckle.OperationFilter;
+using Api.Swashbuckle.Settings;
+using Api.Swashbuckle.Settings.Swagger;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using OpenApiInfo = Microsoft.OpenApi.Models.OpenApiInfo;
 
 namespace Api.Swashbuckle
 {
@@ -28,17 +31,21 @@ namespace Api.Swashbuckle
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
+            #region Identity Server Config
+            IdentityServerSettings identityServerSettings = new IdentityServerSettings();
+            Configuration.GetSection("IdentityServerSettings").Bind(identityServerSettings);
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication("Bearer", options =>
                 {
-                    options.ApiName = "api1";
-                    options.Authority = "https://localhost:6001";
+                    options.ApiName = identityServerSettings.ApiName;
+                    options.Authority = identityServerSettings.Authority;
                 });
-
+            #endregion
+            SwaggerGenSettings swaggerGenSettings = new SwaggerGenSettings();
+            Configuration.GetSection("SwaggerGenSettings").Bind(swaggerGenSettings);
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Protected API", Version = "v1"});
+                options.SwaggerDoc(swaggerGenSettings.SwaggerDoc.name, swaggerGenSettings.SwaggerDoc.OpenApiInfo);
 
                 options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
