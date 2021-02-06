@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using OpenApiInfo = Microsoft.OpenApi.Models.OpenApiInfo;
+using OpenApiSecurityScheme = Microsoft.OpenApi.Models.OpenApiSecurityScheme;
 
 namespace Api.Swashbuckle
 {
@@ -47,23 +48,38 @@ namespace Api.Swashbuckle
             {
                 options.SwaggerDoc(swaggerGenSettings.SwaggerDoc.name, swaggerGenSettings.SwaggerDoc.OpenApiInfo);
 
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                //options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                //{
+                //    Type = SecuritySchemeType.OAuth2,
+                //    Flows = new OpenApiOAuthFlows
+                //    {
+                //        AuthorizationCode = new OpenApiOAuthFlow
+                //        {
+                //            AuthorizationUrl = new Uri("https://localhost:6001/connect/authorize"),
+                //            TokenUrl = new Uri("https://localhost:6001/connect/token"),
+                //            Scopes = new Dictionary<string, string>
+                //            {
+                //                {"api1", "Demo API - full access"}
+                //            }
+                //        }
+                //    }
+                //});
+
+                SecurityDefinition securityDefinition = swaggerGenSettings.SecurityDefinition;
+                Settings.Swagger.AuthorizationCode authorizationCode = securityDefinition.OpenApiSecurityScheme.AuthorizationCode;
+                options.AddSecurityDefinition(securityDefinition.name, new OpenApiSecurityScheme
                 {
-                    Type = SecuritySchemeType.OAuth2,
+                    Type = securityDefinition.OpenApiSecurityScheme.SecuritySchemeType,
                     Flows = new OpenApiOAuthFlows
                     {
                         AuthorizationCode = new OpenApiOAuthFlow
                         {
-                            AuthorizationUrl = new Uri("https://localhost:6001/connect/authorize"),
-                            TokenUrl = new Uri("https://localhost:6001/connect/token"),
-                            Scopes = new Dictionary<string, string>
-                            {
-                                {"api1", "Demo API - full access"}
-                            }
+                            AuthorizationUrl = new Uri(authorizationCode.AuthorizationUrl),
+                            TokenUrl = new Uri(authorizationCode.TokenUrl),
+                            Scopes = authorizationCode.Scopes
                         }
                     }
                 });
-
                 options.OperationFilter<AuthorizeCheckOperationFilter>();
             });
         }
@@ -82,7 +98,6 @@ namespace Api.Swashbuckle
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-
                 options.OAuthClientId("demo_api_swagger");
                 options.OAuthAppName("Demo API - Swagger");
                 options.OAuthUsePkce();
