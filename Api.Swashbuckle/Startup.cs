@@ -40,8 +40,10 @@ namespace Api.Swashbuckle
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddHealthChecks().AddIdentityServer(new Uri("https://localhost:60101"));
+            #region Health Checks
+            services.AddHealthChecks();
             services.AddHealthChecksUI().AddInMemoryStorage();
+            #endregion
             #region Identity Server Config
             IdentityServerSettings identityServerSettings = new IdentityServerSettings();
             Configuration.GetSection("IdentityServerSettings").Bind(identityServerSettings);
@@ -76,7 +78,7 @@ namespace Api.Swashbuckle
                 options.OperationFilter<AuthorizeCheckOperationFilter>();
             });
             #endregion
-
+            #region Autofac Composition root 
             // Install the container, using our configuration
             ContainerInstaller installer = new ContainerInstaller();
             ContainerBuilder builder = installer.Install();
@@ -85,6 +87,7 @@ namespace Api.Swashbuckle
             builder.Populate(services);
 
             IContainer container = builder.Build();
+            #endregion
             // return the IServiceProvider implementation
             return new AutofacServiceProvider(container);
         }
@@ -104,10 +107,8 @@ namespace Api.Swashbuckle
                 options.AddCustomStylesheet("./Customization/custom.css");
             });
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
@@ -118,13 +119,6 @@ namespace Api.Swashbuckle
             });
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapHealthChecksUI();
-                //endpoints.MapHealthChecks("healthz", new HealthCheckOptions()
-                //{
-                //    Predicate = _ => true,
-                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                //});
-                //endpoints.MapHealthChecksUI().RequireAuthorization(HealthChecksUIPolicy);
                 endpoints.MapDefaultControllerRoute();
             });
         }
