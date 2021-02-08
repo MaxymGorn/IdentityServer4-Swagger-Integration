@@ -27,11 +27,11 @@ namespace Api.Swashbuckle
     {
         public Startup(IWebHostEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", false, true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
-                .AddEnvironmentVariables();
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+            .SetBasePath(env.ContentRootPath)
+            .AddJsonFile("appsettings.json", false, true)
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
+            .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
         private const string HealthChecksUIPolicy = nameof(HealthChecksUIPolicy);

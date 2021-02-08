@@ -13,6 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Composition", "Api.Comp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Domain", "Api.Domain\Api.Domain.csproj", "{7FD4BC6C-2991-4080-A52D-8DC4DDD50CDF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiSwagger", "ApiSwagger", "{F942BDA7-9D82-43BF-852F-BB52F9AE89A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityServer", "IdentityServer", "{1ED02385-EB7B-4C59-A25D-C88EF8BD72B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiNSwag", "ApiNSwag", "{2B6F686F-AEC1-479B-894B-71B26838E7AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +48,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3A58E080-2D65-491E-8945-01056096282C} = {1ED02385-EB7B-4C59-A25D-C88EF8BD72B0}
+		{1246DA17-6314-4E20-9093-D41A961B5950} = {F942BDA7-9D82-43BF-852F-BB52F9AE89A8}
+		{F96FDE8E-BA26-4D08-B2A1-F8F5226E0D23} = {2B6F686F-AEC1-479B-894B-71B26838E7AB}
+		{3ABC94BE-6495-4392-A2E9-35188E20E0EC} = {F942BDA7-9D82-43BF-852F-BB52F9AE89A8}
+		{7FD4BC6C-2991-4080-A52D-8DC4DDD50CDF} = {F942BDA7-9D82-43BF-852F-BB52F9AE89A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {87FB2A7A-0EE1-46F1-98F1-1B38E18A95A4}

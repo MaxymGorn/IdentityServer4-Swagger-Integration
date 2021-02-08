@@ -12,11 +12,11 @@ namespace IdentityServer
     {
         public Startup(IWebHostEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", false, true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
-                .AddEnvironmentVariables();
+            IConfigurationBuilder builder = new ConfigurationBuilder()
+            .SetBasePath(env.ContentRootPath)
+            .AddJsonFile("appsettings.json", false, true)
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
+            .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
         public IConfiguration Configuration { get; }
@@ -42,7 +42,6 @@ namespace IdentityServer
         public void Configure(IApplicationBuilder app)
         {
             app.UseDeveloperExceptionPage();
-
             app.UseStaticFiles();
             app.UseHealthChecks("/health", new HealthCheckOptions
             {
@@ -50,10 +49,8 @@ namespace IdentityServer
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
             app.UseRouting();
-
             app.UseIdentityServer();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
         }
     }
