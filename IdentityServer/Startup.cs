@@ -1,5 +1,7 @@
-﻿using IdentityServerHost.Quickstart.UI;
+﻿using HealthChecks.UI.Client;
+using IdentityServerHost.Quickstart.UI;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +23,7 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
+            services.AddHealthChecks();
             services.AddIdentityServer(options =>
                 {
                     options.Events.RaiseErrorEvents = true;
@@ -42,6 +44,11 @@ namespace IdentityServer
             app.UseDeveloperExceptionPage();
 
             app.UseStaticFiles();
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
             app.UseRouting();
 
             app.UseIdentityServer();

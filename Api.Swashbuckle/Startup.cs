@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using Api.Composition;
 using Api.Swashbuckle.OperationFilter;
 using Api.Swashbuckle.Settings;
 using Api.Swashbuckle.Settings.Swagger;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using HealthChecks.UI.Client;
+using HealthChecks.UI.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,11 +34,14 @@ namespace Api.Swashbuckle
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
+        private const string HealthChecksUIPolicy = nameof(HealthChecksUIPolicy);
 
         public IConfiguration Configuration { get; }
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddHealthChecks().AddIdentityServer(new Uri("https://localhost:60101"));
+            services.AddHealthChecksUI().AddInMemoryStorage();
             #region Identity Server Config
             IdentityServerSettings identityServerSettings = new IdentityServerSettings();
             Configuration.GetSection("IdentityServerSettings").Bind(identityServerSettings);
@@ -86,7 +93,16 @@ namespace Api.Swashbuckle
         {
             app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
-
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+            app.UseHealthChecksUI(delegate (Options options)
+            {
+                options.UIPath = "/hc-ui";
+                options.AddCustomStylesheet("./Customization/custom.css");
+            });
             app.UseRouting();
 
             app.UseAuthentication();
@@ -100,8 +116,17 @@ namespace Api.Swashbuckle
                 options.OAuthAppName("Demo API - Swagger");
                 options.OAuthUsePkce();
             });
-
-            app.UseEndpoints(endpoints => endpoints.MapDefaultControllerRoute());
+            app.UseEndpoints(endpoints =>
+            {
+                //endpoints.MapHealthChecksUI();
+                //endpoints.MapHealthChecks("healthz", new HealthCheckOptions()
+                //{
+                //    Predicate = _ => true,
+                //    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                //});
+                //endpoints.MapHealthChecksUI().RequireAuthorization(HealthChecksUIPolicy);
+                endpoints.MapDefaultControllerRoute();
+            });
         }
     }
 }
