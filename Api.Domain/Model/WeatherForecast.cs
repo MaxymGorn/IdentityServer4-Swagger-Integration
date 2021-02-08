@@ -1,3 +1,4 @@
+using Api.Domain.Interfaces;
 using System;
 
 namespace Api.Swashbuckle

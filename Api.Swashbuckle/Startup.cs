@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Api.Composition;
 using Api.Swashbuckle.OperationFilter;
 using Api.Swashbuckle.Settings;
 using Api.Swashbuckle.Settings.Swagger;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +32,7 @@ namespace Api.Swashbuckle
         }
 
         public IConfiguration Configuration { get; }
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
             #region Identity Server Config
@@ -42,29 +45,12 @@ namespace Api.Swashbuckle
                     options.Authority = identityServerSettings.Authority;
                 });
             #endregion
+            #region Swagger Config
             SwaggerGenSettings swaggerGenSettings = new SwaggerGenSettings();
             Configuration.GetSection("SwaggerGenSettings").Bind(swaggerGenSettings);
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc(swaggerGenSettings.SwaggerDoc.name, swaggerGenSettings.SwaggerDoc.OpenApiInfo);
-
-                //options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                //{
-                //    Type = SecuritySchemeType.OAuth2,
-                //    Flows = new OpenApiOAuthFlows
-                //    {
-                //        AuthorizationCode = new OpenApiOAuthFlow
-                //        {
-                //            AuthorizationUrl = new Uri("https://localhost:6001/connect/authorize"),
-                //            TokenUrl = new Uri("https://localhost:6001/connect/token"),
-                //            Scopes = new Dictionary<string, string>
-                //            {
-                //                {"api1", "Demo API - full access"}
-                //            }
-                //        }
-                //    }
-                //});
-
                 SecurityDefinition securityDefinition = swaggerGenSettings.SecurityDefinition;
                 Settings.Swagger.AuthorizationCode authorizationCode = securityDefinition.OpenApiSecurityScheme.AuthorizationCode;
                 options.AddSecurityDefinition(securityDefinition.name, new OpenApiSecurityScheme
@@ -82,6 +68,18 @@ namespace Api.Swashbuckle
                 });
                 options.OperationFilter<AuthorizeCheckOperationFilter>();
             });
+            #endregion
+
+            // Install the container, using our configuration
+            ContainerInstaller installer = new ContainerInstaller();
+            ContainerBuilder builder = installer.Install();
+
+            // Pull the .net core dependencies into the container, like controllers
+            builder.Populate(services);
+
+            IContainer container = builder.Build();
+            // return the IServiceProvider implementation
+            return new AutofacServiceProvider(container);
         }
 
         public void Configure(IApplicationBuilder app)

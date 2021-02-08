@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Swashbuckle", "Api.Swas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.NSwag", "Api.NSwag\Api.NSwag.csproj", "{F96FDE8E-BA26-4D08-B2A1-F8F5226E0D23}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Composition", "Api.Composition\Api.Composition.csproj", "{3ABC94BE-6495-4392-A2E9-35188E20E0EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Domain", "Api.Domain\Api.Domain.csproj", "{7FD4BC6C-2991-4080-A52D-8DC4DDD50CDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{F96FDE8E-BA26-4D08-B2A1-F8F5226E0D23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F96FDE8E-BA26-4D08-B2A1-F8F5226E0D23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F96FDE8E-BA26-4D08-B2A1-F8F5226E0D23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ABC94BE-6495-4392-A2E9-35188E20E0EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ABC94BE-6495-4392-A2E9-35188E20E0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ABC94BE-6495-4392-A2E9-35188E20E0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ABC94BE-6495-4392-A2E9-35188E20E0EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FD4BC6C-2991-4080-A52D-8DC4DDD50CDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FD4BC6C-2991-4080-A52D-8DC4DDD50CDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FD4BC6C-2991-4080-A52D-8DC4DDD50CDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FD4BC6C-2991-4080-A52D-8DC4DDD50CDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
