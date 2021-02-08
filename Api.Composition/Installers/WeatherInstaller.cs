@@ -19,8 +19,8 @@ namespace Api.Composition
 		public void Install(ContainerBuilder builder)
 		{
             Assembly ServiceAssembly = typeof(Init).GetTypeInfo().Assembly;
-			builder.RegisterType<WeatherService>().As<IWeatherForecastService>().
-		    AsSelf().InstancePerDependency();
-		}
+            builder.RegisterType<WeatherService>().As<IWeatherForecastService>().
+            AsSelf().InstancePerDependency();
+        }
 	}
 }

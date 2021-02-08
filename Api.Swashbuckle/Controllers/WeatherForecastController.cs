@@ -4,6 +4,7 @@ using System.Linq;
 using Api.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Swashbuckle.Controllers
 {
@@ -13,8 +14,10 @@ namespace Api.Swashbuckle.Controllers
     public class WeatherForecastController : ControllerBase
     {
         private readonly IWeatherForecastService weatherForecast;
-        public WeatherForecastController(IWeatherForecastService weatherForecast)
+        private readonly ILogger logger;
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IWeatherForecastService weatherForecast)
         {
+            this.logger = logger;
             this.weatherForecast = weatherForecast;
         }
 
@@ -22,6 +25,7 @@ namespace Api.Swashbuckle.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            logger.LogInformation("Test logging");
             return weatherForecast.GetIndexBinder();
         }
     }
