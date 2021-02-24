@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -39,6 +41,14 @@ namespace Api.Swashbuckle
         public IConfiguration Configuration { get; }
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc(options =>
+            {
+                options.ReturnHttpNotAcceptable = true;
+                options.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>();
+                options.InputFormatters.Add(new XmlSerializerInputFormatter(new MvcOptions()));
+                options.OutputFormatters.Add(new XmlSerializerOutputFormatter());
+                options.FormatterMappings.SetMediaTypeMappingForFormat("xml", "application/xml");
+            });
             services.AddControllers();
             #region Health Checks
             services.AddHealthChecks();
